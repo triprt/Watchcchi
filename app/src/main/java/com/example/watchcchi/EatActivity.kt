@@ -14,6 +14,8 @@ class EatActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_eat)
+        // プラス1する
+        watchcchi?.feed()
 
         // 食べてるアニメーション
         eating()
@@ -30,10 +32,8 @@ class EatActivity : Activity() {
                 R.drawable.hiyoko_eating5,
                 R.drawable.hiyoko_eating6,
                 R.drawable.hiyoko_eating7,
-                R.drawable.hiyoko_eating8,
-                R.drawable.hiyoko_eating9,
-                R.drawable.hiyoko_eating9,
-            )
+                R.drawable.hiyoko_eating7,
+                )
             EvolveLevel.NIWATORI -> arrayOf(
                 R.drawable.hiyoko_eating1,
                 R.drawable.hiyoko_eating2,
@@ -42,10 +42,9 @@ class EatActivity : Activity() {
                 R.drawable.hiyoko_eating5,
                 R.drawable.hiyoko_eating6,
                 R.drawable.hiyoko_eating7,
-                R.drawable.hiyoko_eating8,
-                R.drawable.hiyoko_eating9,
-                R.drawable.hiyoko_eating9,
-            )
+                R.drawable.hiyoko_eating7,
+
+                )
             else -> arrayOf(
                 R.drawable.hiyoko_eating1,
                 R.drawable.hiyoko_eating2,
@@ -54,9 +53,7 @@ class EatActivity : Activity() {
                 R.drawable.hiyoko_eating5,
                 R.drawable.hiyoko_eating6,
                 R.drawable.hiyoko_eating7,
-                R.drawable.hiyoko_eating8,
-                R.drawable.hiyoko_eating9,
-                R.drawable.hiyoko_eating9,
+                R.drawable.hiyoko_eating7,
             )
         }
 

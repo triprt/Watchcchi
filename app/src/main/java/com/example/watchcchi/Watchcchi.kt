@@ -228,4 +228,9 @@ class Watchcchi constructor( _activity:Activity) {
     fun getNakayoshiText():String{
         return "● ● ● ●"
     }
+
+    // ご飯をあげる処理
+    fun feed(){
+        hunger.plusHungerLevel()
+    }
 }

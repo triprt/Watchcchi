@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -16,12 +18,20 @@ class StatusActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_status)
-        setupText()
+        //setupText()
         setTapEvent()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        setupText()
+    }
+
+
     // 変数セット
     private fun setupText(){
+        println("setTEXT===========")
         val dayTextView =  findViewById<TextView>(R.id.day_text)
         dayTextView.text = watchcchiInfo?.getDayText()
         val generationTextView =  findViewById<TextView>(R.id.generation_text)

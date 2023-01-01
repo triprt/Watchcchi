@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/box_inset_layout_padding"
+    tools:context=".EatActivity"
+    tools:deviceIds="wear">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/inner_frame_layout_padding"
+        app:layout_boxedEdges="all"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="18dp"
+            android:gravity="center_horizontal|bottom">
+
+            <ImageView
+                android:src="@drawable/hiyoko_eating1"
+                android:id="@+id/eating_image"
+                android:layout_width="60dp"
+                android:layout_height="48dp"
+                />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+
+</androidx.wear.widget.BoxInsetLayout>

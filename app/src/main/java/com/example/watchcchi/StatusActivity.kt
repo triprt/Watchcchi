@@ -18,11 +18,10 @@ class StatusActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_status)
-        //setupText()
         setTapEvent()
     }
 
-
+    // viewDidAppear的なの
     override fun onResume() {
         super.onResume()
         setupText()
@@ -31,7 +30,6 @@ class StatusActivity : Activity() {
 
     // 変数セット
     private fun setupText(){
-        println("setTEXT===========")
         val dayTextView =  findViewById<TextView>(R.id.day_text)
         dayTextView.text = watchcchiInfo?.getDayText()
         val generationTextView =  findViewById<TextView>(R.id.generation_text)

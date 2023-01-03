@@ -36,6 +36,10 @@ class Watchcchi constructor( _activity:Activity) {
     // お腹が空いたかどうかを表す
     lateinit var hunger: Hunger
 
+    // 仲良し度
+    lateinit var friendShip: FriendShip
+
+
     // mainからimageViewをもらって生成
     init{
         activity = _activity
@@ -61,6 +65,8 @@ class Watchcchi constructor( _activity:Activity) {
         }
         // お腹
         hunger = Hunger(activity)
+        // 仲良し
+        friendShip = FriendShip(activity)
 
         // 最初に呼ぶ関数
          when(evolveLevel){
@@ -226,11 +232,14 @@ class Watchcchi constructor( _activity:Activity) {
     }
 
     fun getNakayoshiText():String{
-        return "● ● ● ●"
+        return friendShip.getOnakaText()
     }
 
     // ご飯をあげる処理
     fun feed(){
-        hunger.plusHungerLevel()
+        if (hunger.isEnvolveAndPlusLevel(friendShip)){
+            // 進化する
+        }
+
     }
 }

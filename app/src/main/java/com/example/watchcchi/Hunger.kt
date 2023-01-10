@@ -31,54 +31,52 @@ class Hunger constructor( _activity: Activity)  {
 
         //lastUpdateTimeと今の差分を取得し、hungerLevelをセット
         val dif = ChronoUnit.HOURS.between(lastUpdateTime,LocalDateTime.now()).toDouble()
-        minusLevel(Math.floor(dif/2).toInt())
 
+        for(i in 1..Math.floor(dif/2).toInt()){
+            minusLevel()
+        }
         // 2時間ごとにお腹をすかせる処理を開始
         hungryHandler()
     }
 
     // 2時間ごとにお腹をすかせる処理
     private fun hungryHandler(){
-        // 2時間から経過時間を引く
-        var delay:Long = 10 * 1000 - ChronoUnit.MILLIS.between(lastUpdateTime, LocalDateTime.now())
-        if (delay < 0){
-            delay = 0
-        }
+        // 2時間のミリ秒で表した値
+        val TWO_HOURS_MS : Long = 2 * 60 * 60 * 1000
+        // 前回の満腹度更新時間から経過したミリ秒数
+        val diffMS : Long = ChronoUnit.MILLIS.between(lastUpdateTime, LocalDateTime.now())
+        // 次の2時間定期処理を始めるまで待つ時間（前回の満腹度更新時間から5:30経過していたら、1:30後に定期処理を開始）
+        // (例) 05:30 % 02:00 = 01:30
+        val shiftTimeMS: Long = diffMS % TWO_HOURS_MS
+
         timer?.cancel()
         timer = Timer()
         timer?.schedule(object : TimerTask() {
             override fun run() {
                 // 2時間ごとに実行する処理
-                minusLevel(1)
-                println("マイナス")
-                println(level)
-
-                if(level == 0){
-                    timer?.cancel()
-                    timer = null
-                }
+                minusLevel()
+                println("満腹度マイナス" + level)
             }
-        }, delay, 10 * 1000) // 2時間 = 2 * 60 * 60 * 1000[ms]
+        }, shiftTimeMS, TWO_HOURS_MS)
     }
 
     // 満腹度を減らす処理
-    private fun minusLevel(num : Int){
-        // 0であれば何もしない
-         if(level == 0) return
-        // num分引いて、マイナスであれば0にする
-        level -= num
-
-        if(level < 0) level = 0
-        // 更新時間を更新 2*num
-        lastUpdateTime = lastUpdateTime.plusHours(num*2L)
-        // 0になったら値保存
-        if(level == 0){
-            saveHunger0TimeToDefaultSharedPreferences(lastUpdateTime)
-            // 0になったのでスタート
-            watchcchi?.friendShip?.friendShipHandler()
+    private fun minusLevel(){
+        if(level > 0){
+            // レベル下げる
+            level -= 1
+            // 更新時間を更新 2*num
+            lastUpdateTime = lastUpdateTime.plusHours(2L)
+            // 保存もしておく
+            saveToDefaultSharedPreferences()
+        } else{
+            // 満腹度0かつ前回の満腹度更新から、2h以上経過していたら
+            if(lastUpdateTime.plusHours(2L) > LocalDateTime.now()) {
+                watchcchi?.friendShip?.minusLevel()
+            }
         }
-        // 保存もしておく
-        saveToDefaultSharedPreferences()
+
+
     }
 
     // 餌があげられるか判定
@@ -87,26 +85,20 @@ class Hunger constructor( _activity: Activity)  {
     }
 
     // 餌をあげる処理から呼び出す
-    fun isEnvolveAndPlusLevel(friendShip:FriendShip):Boolean{
+    fun plusLevel(){
         // 満腹であれば何もしない
-        if(level == 6) return false
+        if(level == 6) return
         // レベルあげる
         level += 1
-        println("plusHungerLevel")
-        println(level)
+        println("plusHungerLevel" + level)
 
         // 時間更新
         lastUpdateTime = LocalDateTime.now()
         // 値保存
         saveToDefaultSharedPreferences()
-        // 0だった時はタイマーを開始、0時間をリセット
-        if(level == 1) {
-            hungryHandler()
-            saveHunger0TimeToDefaultSharedPreferences(null)
-            watchcchi?.friendShip?.stopFriendShipHandler()
-        }
+
         // ご飯あげた回数をプラス
-        return friendShip.isEnvolveAndPlusFeedCount()
+        watchcchi?.friendShip?.plusFeedCount()
     }
 
     // 値保存
@@ -115,15 +107,6 @@ class Hunger constructor( _activity: Activity)  {
         val editor = pref.edit()
         editor.putInt ("hungerLevel", level)
         editor.putString ("hungerLevelLastUpdateTimeStr",lastUpdateTime.format(formatter) )
-        editor.apply()
-    }
-
-    // 0になった時の時間を保存
-    private fun saveHunger0TimeToDefaultSharedPreferences(localDateTime:LocalDateTime?){
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
-        val editor = pref.edit()
-        editor.putInt ("hungerLevel", level)
-        editor.putString ("hungerLevel0LastTimeStr", localDateTime?.format(formatter))
         editor.apply()
     }
 

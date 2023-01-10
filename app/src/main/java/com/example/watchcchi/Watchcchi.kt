@@ -12,7 +12,8 @@ import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.widget.ImageButton
 import android.widget.ImageView
-
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 enum class EvolveLevel(val id: Int) {
     EGG(0),
@@ -63,10 +64,14 @@ class Watchcchi constructor( _activity:Activity) {
             4 -> EvolveLevel.NIWATORI
             else -> {EvolveLevel.EGG}
         }
-        // お腹
-        hunger = Hunger(activity)
+
+        // 仲良し度をセットしてからお腹をすかせる処理をする必要があるので同期処理
+        //lifecycleScope.launch{
         // 仲良し
         friendShip = FriendShip(activity)
+        // お腹
+        hunger = Hunger(activity)
+        //}
 
         // 最初に呼ぶ関数
          when(evolveLevel){
@@ -237,9 +242,6 @@ class Watchcchi constructor( _activity:Activity) {
 
     // ご飯をあげる処理
     fun feed(){
-        if (hunger.isEnvolveAndPlusLevel(friendShip)){
-            // 進化する
-        }
-
+        hunger.plusLevel()
     }
 }

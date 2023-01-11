@@ -12,7 +12,7 @@ class WatchcchiInfo constructor( _activity:Activity){
     // うぉっちっち情報
     lateinit var startDate: LocalDate
     var generation: Int = 1
-    val formatter = DateTimeFormatter.ofPattern("d MMMM, yyyy")
+    val formatter = DateTimeFormatter.ofPattern("d MM, yyyy")
     // アクティビティ
     lateinit var activity: Activity
 

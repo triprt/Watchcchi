@@ -85,10 +85,10 @@ class MainActivity : Activity() {
                     watchcchi!!.walking(R.drawable.hiyoko)
                 }
                 EvolveLevel.HIYOKO -> {
-                    //hiyokoMediaPlayer.start()
+                    hiyokoMediaPlayer.start()
                 }
                 EvolveLevel.HIYOKO -> {
-                    //niwatoriMediaPlayer.start()
+                    niwatoriMediaPlayer.start()
                 }
             }
         }
@@ -116,7 +116,7 @@ class MainActivity : Activity() {
             EvolveLevel.HIYOKO -> {
                 hiyokoMediaPlayer.start()
             }
-            EvolveLevel.HIYOKO -> {
+            EvolveLevel.NIWATORI -> {
                 niwatoriMediaPlayer.start()
             }
         }
@@ -131,8 +131,8 @@ class MainActivity : Activity() {
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         editor.putInt ("evolveLevel", watchcchi!!.getEvolveLevel().id)
-        editor.putString ("hungerLevelLastUpdateTimeStr", watchcchiInfo?.startDate?.format(
-            watchcchiInfo?.formatter) )
+        editor.putString ("startDateStr", watchcchiInfo?.startDate?.format(
+            watchcchi?.hunger?.formatter) )
         editor.apply()
         println( "アプリ終了")
         println( pref.getInt("evolveLevel",0))

@@ -11,7 +11,7 @@ class FriendShip constructor( _activity: Activity)  {
     lateinit var activity: Activity
     private var level = 0
     private var feedCount = 0
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
 
     init{
         activity = _activity
@@ -51,7 +51,7 @@ class FriendShip constructor( _activity: Activity)  {
             watchcchi?.envolve()
             feedCount = 0
             level = 0
-       // }
+       //}
         saveToDefaultSharedPreferences()
     }
 

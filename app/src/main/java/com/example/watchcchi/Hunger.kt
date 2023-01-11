@@ -12,7 +12,7 @@ class Hunger constructor( _activity: Activity)  {
     lateinit var activity:Activity
     private var level = 0 // 6段階
     lateinit var lastUpdateTime : LocalDateTime
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
     private var timer :Timer? = null
 
     init{
@@ -26,11 +26,15 @@ class Hunger constructor( _activity: Activity)  {
 
         //lastUpdateTime セット
         val lastUpdateTimeStr = pref.getString("hungerLevelLastUpdateTimeStr", LocalDateTime.now().format(formatter))
+        println("lastUpdateTimeStr" + lastUpdateTimeStr)
         lastUpdateTime = LocalDateTime.parse(lastUpdateTimeStr,formatter)
         println(LocalDateTime.now().format(formatter))
 
         //lastUpdateTimeと今の差分を取得し、hungerLevelをセット
-        val dif = ChronoUnit.HOURS.between(lastUpdateTime,LocalDateTime.now()).toDouble()
+        var dif = ChronoUnit.HOURS.between(lastUpdateTime,LocalDateTime.now()).toDouble()
+        if( dif < 0 ){
+            dif = 0.0
+        }
 
         for(i in 1..Math.floor(dif/2).toInt()){
             minusLevel()
@@ -47,7 +51,11 @@ class Hunger constructor( _activity: Activity)  {
         val diffMS : Long = ChronoUnit.MILLIS.between(lastUpdateTime, LocalDateTime.now())
         // 次の2時間定期処理を始めるまで待つ時間（前回の満腹度更新時間から5:30経過していたら、1:30後に定期処理を開始）
         // (例) 05:30 % 02:00 = 01:30
-        val shiftTimeMS: Long = diffMS % TWO_HOURS_MS
+        var shiftTimeMS: Long = diffMS % TWO_HOURS_MS
+
+        if(shiftTimeMS < 0){
+            shiftTimeMS = 0
+        }
 
         timer?.cancel()
         timer = Timer()
@@ -75,8 +83,6 @@ class Hunger constructor( _activity: Activity)  {
                 watchcchi?.friendShip?.minusLevel()
             }
         }
-
-
     }
 
     // 餌があげられるか判定

@@ -195,13 +195,13 @@ class Watchcchi constructor( _activity:Activity) {
                 if (index == 0) {
                     // 画像をすべて表示したら、「Runnable」を停止する
                     walking(R.drawable.niwatori)
+
                     return
                 }
                 handler.postDelayed(this, 1000)
             }
         }
         handler.post(runnable)
-
     }
 
 

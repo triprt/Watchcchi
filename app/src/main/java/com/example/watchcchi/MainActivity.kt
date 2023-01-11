@@ -131,6 +131,8 @@ class MainActivity : Activity() {
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         editor.putInt ("evolveLevel", watchcchi!!.getEvolveLevel().id)
+        editor.putString ("hungerLevelLastUpdateTimeStr", watchcchiInfo?.startDate?.format(
+            watchcchiInfo?.formatter) )
         editor.apply()
         println( "アプリ終了")
         println( pref.getInt("evolveLevel",0))

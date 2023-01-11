@@ -28,7 +28,7 @@ class WatchcchiInfo constructor( _activity:Activity){
 
     fun getDayText():String{
         // 日付の差分計算
-        return ChronoUnit.DAYS.between(LocalDate.now(),startDate).toString() + "日目"
+        return (ChronoUnit.DAYS.between(LocalDate.now(),startDate) + 1).toString() + "日目"
     }
 
     fun getGenerationText():String{

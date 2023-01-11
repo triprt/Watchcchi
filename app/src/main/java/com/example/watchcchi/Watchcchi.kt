@@ -4,16 +4,13 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Handler
 import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.widget.ImageButton
-import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
+
 
 enum class EvolveLevel(val id: Int) {
     EGG(0),
@@ -30,16 +27,13 @@ class Watchcchi constructor( _activity:Activity) {
     lateinit var vibrator:Vibrator
     lateinit var activity:Activity
 
-
     // 現在の進化状態
     private lateinit var evolveLevel:EvolveLevel
 
     // お腹が空いたかどうかを表す
     lateinit var hunger: Hunger
-
     // 仲良し度
     lateinit var friendShip: FriendShip
-
 
     // mainからimageViewをもらって生成
     init{
@@ -51,7 +45,7 @@ class Watchcchi constructor( _activity:Activity) {
 
         // 保存された値を取得
         val pref = PreferenceManager.getDefaultSharedPreferences(_activity)
-        val evolveLevelId = pref.getInt("evolveLevel",0)
+        val evolveLevelId = pref.getInt("evolveLevel",3)
         println("レベル取得")
         println(evolveLevelId)
 
@@ -67,10 +61,13 @@ class Watchcchi constructor( _activity:Activity) {
 
         // 仲良し度をセットしてからお腹をすかせる処理をする必要があるので同期処理
         //lifecycleScope.launch{
-        // 仲良し
-        friendShip = FriendShip(activity)
-        // お腹
-        hunger = Hunger(activity)
+            // 仲良し
+            friendShip = FriendShip(activity)
+            // お腹
+        println("==")
+        sleep(1000)
+        println("AAA")
+            hunger = Hunger(activity)
         //}
 
         // 最初に呼ぶ関数
@@ -95,7 +92,6 @@ class Watchcchi constructor( _activity:Activity) {
                 walking(R.drawable.niwatori)
             }
         }
-
     }
     // 進化
     fun nextEvolveLevel(){
@@ -116,9 +112,6 @@ class Watchcchi constructor( _activity:Activity) {
     /* ここから卵の時に呼ばれる */
     // たまごから生まれる処理 10回タップされたら呼ばれる
     fun eggToHiyoko(){
-        // 進化させる
-        nextEvolveLevel()
-
         //たまごが揺れる
         val animator = ObjectAnimator.ofFloat(imageButton, "translationX", 0f, 3f, -3f, 0f)
         animator.duration = 100
@@ -146,7 +139,7 @@ class Watchcchi constructor( _activity:Activity) {
                 index = (index + 1) % images.size
                 if (index == 0) {
                     // 画像をすべて表示したら、「Runnable」を停止する
-                    nextEvolveLevel()
+                    envolve()
                     return
                 }
                 handler.postDelayed(this, 1000)
@@ -154,6 +147,63 @@ class Watchcchi constructor( _activity:Activity) {
         }
         handler.post(runnable)
     }
+
+    fun envolve(){
+        when(evolveLevel){
+            EvolveLevel.EGG -> {
+                // なにもしない？
+            }
+            EvolveLevel.BIRTH -> {
+                // 生まれる処理
+                eggToHiyoko()
+            }
+            EvolveLevel.HIYOKO_WITH_EGG ->{
+                //特に処理なし？
+            }
+            EvolveLevel.HIYOKO ->{
+                // 歩きまわる処理
+                hiyokoToNiwatori()
+            }
+            EvolveLevel.NIWATORI ->{
+                // 卵をうむ処理
+            }
+        }
+        nextEvolveLevel()
+    }
+
+    /* ひよこからニワトリ */
+    fun hiyokoToNiwatori(){
+        // 画像切り替え
+        val images = arrayOf(
+            R.drawable.hiyoko,
+            R.drawable.niwatori,
+            R.drawable.hiyoko,
+            R.drawable.niwatori,
+            R.drawable.hiyoko,
+            R.drawable.niwatori,
+            )
+
+        val handler = Handler()
+        var index = 0
+        val runnable = object : Runnable {
+            override fun run() {
+                // 振動
+                vibrator.vibrate(100)
+                // 画像切り替え
+                imageButton.setImageResource(images[index])
+                index = (index + 1) % images.size
+                if (index == 0) {
+                    // 画像をすべて表示したら、「Runnable」を停止する
+                    walking(R.drawable.niwatori)
+                    return
+                }
+                handler.postDelayed(this, 1000)
+            }
+        }
+        handler.post(runnable)
+
+    }
+
 
     /* ここからひよこのときに呼ばれる */
     fun walking(image:Int){

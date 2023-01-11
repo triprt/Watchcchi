@@ -44,7 +44,7 @@ class Hunger constructor( _activity: Activity)  {
         // 2時間のミリ秒で表した値
         val TWO_HOURS_MS : Long = 2 * 60 * 60 * 1000
         // 前回の満腹度更新時間から経過したミリ秒数
-        val diffMS : Long = ChronoUnit.MILLIS.between(LocalDateTime.now(), lastUpdateTime)
+        val diffMS : Long = ChronoUnit.MILLIS.between(lastUpdateTime, LocalDateTime.now())
         // 次の2時間定期処理を始めるまで待つ時間（前回の満腹度更新時間から5:30経過していたら、1:30後に定期処理を開始）
         // (例) 05:30 % 02:00 = 01:30
         val shiftTimeMS: Long = diffMS % TWO_HOURS_MS
@@ -120,6 +120,4 @@ class Hunger constructor( _activity: Activity)  {
             else -> "○ ○ ○ ○"
         }
     }
-
-
 }

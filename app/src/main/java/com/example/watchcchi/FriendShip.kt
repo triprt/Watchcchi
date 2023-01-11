@@ -17,8 +17,8 @@ class FriendShip constructor( _activity: Activity)  {
         activity = _activity
         // 保存された値を取得 hungerLevel セット
         val pref = PreferenceManager.getDefaultSharedPreferences(activity)
-        level = pref.getInt("friendshipLevel",0)
-        feedCount = pref.getInt("feedCount",0)
+        level = pref.getInt("friendshipLevel",3)
+        feedCount = pref.getInt("feedCount",1)
         println("friendshipLevelレベル取得 " + level)
         println("feedCount取得 " + feedCount)
     }
@@ -46,12 +46,12 @@ class FriendShip constructor( _activity: Activity)  {
 
         }
         // 6になったら進化する
-        if(level == 6) {
+        //if(level == 4) {
             // 進化
-            //watchcchi?.envolve()
+            watchcchi?.envolve()
             feedCount = 0
             level = 0
-        }
+       // }
         saveToDefaultSharedPreferences()
     }
 

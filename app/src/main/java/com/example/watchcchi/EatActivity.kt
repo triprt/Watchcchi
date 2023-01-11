@@ -85,6 +85,25 @@ class EatActivity : Activity() {
                 R.drawable.hiyoko_no_eating2,
                 R.drawable.hiyoko_no_eating2,
                 )
+            EatType.NIWATORI_NOEAT -> arrayOf(
+                R.drawable.niwatori_no_eating1,
+                R.drawable.niwatori_no_eating2,
+                R.drawable.niwatori_no_eating1,
+                R.drawable.niwatori_no_eating2,
+                R.drawable.niwatori_no_eating1,
+                R.drawable.niwatori_no_eating2,
+                R.drawable.niwatori_no_eating2,
+            )
+            EatType.NIWATORI_EAT -> arrayOf(
+                R.drawable.niwatori_eating1,
+                R.drawable.niwatori_eating2,
+                R.drawable.niwatori_eating3,
+                R.drawable.niwatori_eating4,
+                R.drawable.niwatori_eating5,
+                R.drawable.niwatori_eating6,
+                R.drawable.niwatori_eating7,
+                R.drawable.niwatori_eating7,
+                )
             else -> {arrayOf(
                 R.drawable.hiyoko_eating1,
                 R.drawable.hiyoko_eating2,

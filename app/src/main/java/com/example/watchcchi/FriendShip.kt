@@ -7,16 +7,17 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class FriendShip constructor( _activity: Activity)  {
-    lateinit var activity: Activity
+class FriendShip constructor( _mainActivity: MainActivity)  {
+    lateinit var mainActivity: Activity
     private var level = 0
     private var feedCount = 0
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
+    private lateinit var watchicchiApp: WatchicchiApp
 
     init{
-        activity = _activity
+        mainActivity = _mainActivity
+        watchicchiApp = mainActivity.application as WatchicchiApp
         // 保存された値を取得 hungerLevel セット
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
+        val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         level = pref.getInt("friendshipLevel",3)
         feedCount = pref.getInt("feedCount",1)
         println("friendshipLevelレベル取得 " + level)
@@ -46,18 +47,19 @@ class FriendShip constructor( _activity: Activity)  {
 
         }
         // 6になったら進化する
-        //if(level == 4) {
-            // 進化
-            watchcchi?.envolve()
+        if(level == 4) {
+            // 次にMainActivityが開かれた際に進化を実行するので
+            // レベルだけあげておく
+            watchicchiApp.getWatchicchi().nextEvolveLevel()
             feedCount = 0
             level = 0
-       //}
+       }
         saveToDefaultSharedPreferences()
     }
 
     // 値保存
     private fun saveToDefaultSharedPreferences(){
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
+        val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         val editor = pref.edit()
         editor.putInt ("friendshipLevel", level)
         editor.putInt ("feedCount", feedCount)

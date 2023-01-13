@@ -7,23 +7,28 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class WatchcchiInfo constructor( _activity:Activity){
+class WatchcchiInfo constructor(_watchicchiApp:WatchicchiApp){
+    // sharePrefのために渡す
+    private var watchicchiApp: WatchicchiApp
 
     // うぉっちっち情報
-    lateinit var startDate: LocalDate
-    var generation: Int = 1
-    val formatter = DateTimeFormatter.ofPattern("d MM, yyyy")
-    // アクティビティ
-    lateinit var activity: Activity
+    private lateinit var startDate: LocalDate
+    private var generation: Int = 1
+    private val formatter = DateTimeFormatter.ofPattern("d MM, yyyy")
 
     init{
-        activity = _activity
+        // Applicationセット
+        watchicchiApp = _watchicchiApp
 
         // SharedPreferencesを取得する
-        val pref = PreferenceManager.getDefaultSharedPreferences(_activity)
+        val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
         val startDateStr = pref.getString("startDateStr", LocalDateTime.now().format(formatter))
+
+        val formatter = DateTimeFormatter.ofPattern("d MM, yyyy")
         generation = pref.getInt("generation", 1)
         startDate = LocalDate.parse(startDateStr,formatter)
+
+        println("WatchichiInfo init 完了")
     }
 
     fun getDayText():String{
@@ -33,5 +38,9 @@ class WatchcchiInfo constructor( _activity:Activity){
 
     fun getGenerationText():String{
         return generation.toString() + "世代"
+    }
+
+    fun plusGeneration(){
+        generation ++
     }
 }

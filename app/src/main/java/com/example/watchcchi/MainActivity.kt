@@ -6,21 +6,18 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Vibrator
-import android.preference.PreferenceManager
 import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageButton
 import com.example.watchcchi.databinding.ActivityMainBinding
-import java.time.LocalDateTime
 
 
 // こけこっこー
 // http://mimimi-sound.com/?s=%E3%81%B2%E3%82%88%E3%81%93
-
 //ひよこ
 // https://taira-komori.jpn.org/welcome.html
 
-var  watchcchiInfo : WatchcchiInfo? = null
-var  watchcchi : Watchcchi? = null
+
 
 class MainActivity : Activity() {
 
@@ -28,12 +25,18 @@ class MainActivity : Activity() {
     private var  tapSum = 0
     private lateinit var  hiyokoMediaPlayer: MediaPlayer
     private lateinit var  niwatoriMediaPlayer: MediaPlayer
+    private lateinit var watchicchiApp: WatchicchiApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // 変数設定など
-        setup()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 何度も定義するのはあれなのでここで定義
+        hiyokoMediaPlayer = MediaPlayer.create(this, R.raw.piyo)
+        niwatoriMediaPlayer = MediaPlayer.create(this, R.raw.kokekokko)
 
         // ボタンタップ時のリスナー
         val statusButton =  findViewById<ImageButton>(R.id.status_button)
@@ -45,97 +48,77 @@ class MainActivity : Activity() {
 
         val hiyokoImageButton = findViewById<ImageButton>(R.id.watchcchi_image)
         hiyokoImageButton.setOnClickListener {
-            // ぴよ
-            onClickHiyoko()
+            // タップされた時の処理
+            onClickHiyokoImageButton()
         }
+        watchicchiApp = this.application as WatchicchiApp
+        watchicchiApp.getWatchicchi().setUpActivity(this)
+        println("MainActivity onCreate() 完了")
     }
 
-    private fun setup(){
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        //　うぉっちっち状態管理クラス
-        watchcchi = Watchcchi(this )
-        // 世代や日数など
-        watchcchiInfo = WatchcchiInfo(this)
+    // viewDidAppearてきな？
+    override fun onResume() {
+        super.onResume()
+        // 進化レベルに応じてボタンの表示・非表示切り替え
+        val statusButton =  findViewById<ImageButton>(R.id.status_button)
+        if (watchicchiApp.getWatchicchi().getEvolveLevel() == WatchicchiApp.EvolveLevel.HIYOKO
+            ||
+            watchicchiApp.getWatchicchi().getEvolveLevel() == WatchicchiApp.EvolveLevel.NIWATORI
+        ){
+            statusButton.visibility = View.INVISIBLE
+        }else{
+            statusButton.visibility = View.VISIBLE
+        }
 
-        // 何度も定義するのはあれなのでここで定義
-        hiyokoMediaPlayer = MediaPlayer.create(this, R.raw.piyo)
-        niwatoriMediaPlayer = MediaPlayer.create(this, R.raw.kokekokko)
+
+        // 最初に呼ぶ関数
+        watchicchiApp.getWatchicchi().setHiyokoImage()
     }
+
+
 
     // 画面タッチ処理はoverride fun onTouchEventの中に書く
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         // タップして離れたら
         if ( event?.action == android.view.MotionEvent.ACTION_UP) {
-            when (watchcchi!!.getEvolveLevel()) {
-                EvolveLevel.EGG -> {
-                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    vibrator.vibrate(50)
-                    tapSum++
-                    if (tapSum == 10) {
-                        watchcchi!!.eggToHiyoko()
-                        tapSum = 0
-                    }
-                }
-                EvolveLevel.HIYOKO_WITH_EGG -> {
-                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    vibrator.vibrate(100)
-                    watchcchi!!.nextEvolveLevel()
-                    watchcchi!!.walking(R.drawable.hiyoko)
-                }
-                EvolveLevel.HIYOKO -> {
-                    hiyokoMediaPlayer.start()
-                }
-                EvolveLevel.HIYOKO -> {
-                    niwatoriMediaPlayer.start()
-                }
-            }
         }
         return super.onTouchEvent(event)
     }
 
-    // ひよこtappでPIYOっていう
-    fun onClickHiyoko(){
-        when (watchcchi!!.getEvolveLevel()) {
-            EvolveLevel.EGG -> {
+    // ひよこ画像エリアタップ
+    fun onClickHiyokoImageButton(){
+        when (watchicchiApp.getWatchicchi().getEvolveLevel()) {
+            WatchicchiApp.EvolveLevel.EGG  -> {
                 val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                 vibrator.vibrate(50)
                 tapSum++
                 if (tapSum == 10) {
-                    watchcchi!!.eggToHiyoko()
+                    // 進化
+                    watchicchiApp.getWatchicchi().envolve()
                     tapSum = 0
                 }
             }
-            EvolveLevel.HIYOKO_WITH_EGG -> {
-                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibrator.vibrate(100)
-                watchcchi!!.nextEvolveLevel()
-                watchcchi!!.walking(R.drawable.hiyoko)
+            WatchicchiApp.EvolveLevel.HIYOKO_WITH_EGG -> {
+                // 進化
+                watchicchiApp.getWatchicchi().envolve()
             }
-            EvolveLevel.HIYOKO -> {
+            WatchicchiApp.EvolveLevel.HIYOKO -> {
+                // 鳴き声
                 hiyokoMediaPlayer.start()
             }
-            EvolveLevel.NIWATORI -> {
+            WatchicchiApp.EvolveLevel.NIWATORI -> {
+                // 鳴き声
                 niwatoriMediaPlayer.start()
             }
         }
     }
 
 
-
     // アプリ終了時、うぉっちっちの状態を保存
     override fun onDestroy() {
         super.onDestroy()
-        // 列挙型を保存する処理
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = pref.edit()
-        editor.putInt ("evolveLevel", watchcchi!!.getEvolveLevel().id)
-        editor.putString ("startDateStr", watchcchiInfo?.startDate?.format(
-            watchcchi?.hunger?.formatter) )
-        editor.apply()
         println( "アプリ終了")
-        println( pref.getInt("evolveLevel",0))
 
     }
 }

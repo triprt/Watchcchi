@@ -8,18 +8,21 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class Hunger constructor( _activity: Activity)  {
-    lateinit var activity:Activity
+class Hunger constructor( _mainActivity: MainActivity)  {
+    lateinit var mainActivity:Activity
     private var level = 0 // 6段階
     lateinit var lastUpdateTime : LocalDateTime
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS")
     private var timer :Timer? = null
+    private lateinit var watchicchiApp: WatchicchiApp
 
     init{
-        activity = _activity
+        mainActivity = _mainActivity
+        watchicchiApp = mainActivity.application as WatchicchiApp
+
         //getSharedPreferencesから持ってくる
         // 保存された値を取得 hungerLevel セット
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
+        val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         level = pref.getInt("hungerLevel",0)
         println("hungerLevelレベル取得")
         println(level)
@@ -80,7 +83,7 @@ class Hunger constructor( _activity: Activity)  {
         } else{
             // 満腹度0かつ前回の満腹度更新から、2h以上経過していたら
             if(lastUpdateTime.plusHours(2L) > LocalDateTime.now()) {
-                watchcchi?.friendShip?.minusLevel()
+                watchicchiApp.getWatchicchi().getFriendship().minusLevel()
             }
         }
     }
@@ -104,12 +107,12 @@ class Hunger constructor( _activity: Activity)  {
         saveToDefaultSharedPreferences()
 
         // ご飯あげた回数をプラス
-        watchcchi?.friendShip?.plusFeedCount()
+        watchicchiApp.getWatchicchi().getFriendship().plusFeedCount()
     }
 
     // 値保存
     private fun saveToDefaultSharedPreferences(){
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
+        val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         val editor = pref.edit()
         editor.putInt ("hungerLevel", level)
         editor.putString ("hungerLevelLastUpdateTimeStr",lastUpdateTime.format(formatter) )

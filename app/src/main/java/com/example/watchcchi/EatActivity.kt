@@ -11,11 +11,14 @@ import android.widget.ImageView
 
 class EatActivity : Activity() {
 
+    private lateinit var watchicchiApp: WatchicchiApp
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_eat)
+        watchicchiApp = this.application as WatchicchiApp
         // プラス1する
-        watchcchi?.feed()
+        watchicchiApp.getWatchicchi().feed()
         // 食べてるアニメーション
         eating()
     }
@@ -49,14 +52,14 @@ class EatActivity : Activity() {
 
     private fun getEatType() : EatType{
         // たべてる画像切り替え
-        if(watchcchi?.hunger?.canFeed() == true){
-            if( watchcchi?.getEvolveLevel() == EvolveLevel.HIYOKO){
+        if(watchicchiApp.getWatchicchi().getHunger().canFeed()){
+            if( watchicchiApp.getWatchicchi().getEvolveLevel() == WatchicchiApp.EvolveLevel.HIYOKO){
                 return EatType.HIYOKO_EAT
             }else{
                 return EatType.NIWATORI_EAT
             }
         }else{
-            if( watchcchi?.getEvolveLevel() == EvolveLevel.HIYOKO){
+            if( watchicchiApp.getWatchicchi().getEvolveLevel() == WatchicchiApp.EvolveLevel.HIYOKO){
                 return EatType.HIYOKO_NOEAT
             }else{
                 return EatType.NIWATORI_NOEAT

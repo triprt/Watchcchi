@@ -14,9 +14,12 @@ import java.time.format.DateTimeFormatter
 
 
 class StatusActivity : Activity() {
+    private lateinit var watchicchiApp: WatchicchiApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        watchicchiApp = this.application as WatchicchiApp
+
         setContentView(R.layout.activity_status)
         setTapEvent()
     }
@@ -31,14 +34,14 @@ class StatusActivity : Activity() {
     // 変数セット
     private fun setupText(){
         val dayTextView =  findViewById<TextView>(R.id.day_text)
-        dayTextView.text = watchcchiInfo?.getDayText()
+        dayTextView.text = watchicchiApp.getWatchicchiInfo().getDayText()
         val generationTextView =  findViewById<TextView>(R.id.generation_text)
-        generationTextView.text = watchcchiInfo?.getGenerationText()
+        generationTextView.text = watchicchiApp.getWatchicchiInfo().getGenerationText()
 
         val onakaTextView =  findViewById<TextView>(R.id.onaka)
-        onakaTextView.text = watchcchi?.getOnakaText()
+        onakaTextView.text = watchicchiApp.getWatchicchi().getOnakaText()
         val nakayoshiTextView =  findViewById<TextView>(R.id.nakayoshi)
-        nakayoshiTextView.text = watchcchi?.getNakayoshiText()
+        nakayoshiTextView.text = watchicchiApp.getWatchicchi().getNakayoshiText()
     }
 
     // ボタン押した時の処理

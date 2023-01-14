@@ -103,7 +103,23 @@ class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
 
     fun envolve(){
         nextEvolveLevel()
+        setLevel()
         setHiyokoImage()
+    }
+
+    private fun setLevel(){
+        // Egg, HIYOKO, Niwatoriのときは各レベルを0にする
+        if (evolveLevel == WatchicchiApp.EvolveLevel.EGG ||
+            evolveLevel == WatchicchiApp.EvolveLevel.HIYOKO ||
+            evolveLevel == WatchicchiApp.EvolveLevel.NIWATORI ){
+            hunger.resetLevel()
+            friendShip.resetLevel()
+        }
+
+        // たまごになったら世代かえる
+        if (evolveLevel == WatchicchiApp.EvolveLevel.EGG){
+            watchicchiApp.getWatchicchiInfo().plusGeneration()
+        }
     }
 
 
@@ -118,14 +134,14 @@ class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
             WatchicchiApp.EvolveLevel.NIWATORI -> WatchicchiApp.EvolveLevel.NIWATORI_LAY_EGG
             WatchicchiApp.EvolveLevel.NIWATORI_LAY_EGG -> WatchicchiApp.EvolveLevel.EGG
         }
-        if (evolveLevel == WatchicchiApp.EvolveLevel.NIWATORI_LAY_EGG){
-            watchicchiApp.getWatchicchiInfo().plusGeneration()
-        }
+
         // 進化レベル保存
         val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         val editor = pref.edit()
         editor.putInt ("evolveLevel", evolveLevel.id)
         editor.apply()
+
+        println("evolveLevel 保存" + evolveLevel)
 
         // ボタン表示非表示切り替え
         mainActivity?.changeStatusButtonVisibility()

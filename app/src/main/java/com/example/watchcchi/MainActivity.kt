@@ -6,16 +6,21 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import com.example.watchcchi.databinding.ActivityMainBinding
+import java.lang.Thread.sleep
 
 
 // こけこっこー
 // http://mimimi-sound.com/?s=%E3%81%B2%E3%82%88%E3%81%93
+//こけ
+//https://soundeffect-lab.info/agreement/
 //ひよこ
 // https://taira-komori.jpn.org/welcome.html
 
@@ -28,6 +33,7 @@ class MainActivity : Activity(){
     private lateinit var  hiyokoMediaPlayer: MediaPlayer
     private lateinit var  niwatoriMediaPlayer: MediaPlayer
     private lateinit var watchicchiApp: WatchicchiApp
+    private lateinit var hiyokoImageButton:ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +54,7 @@ class MainActivity : Activity(){
             startActivity(intent)
         }
 
-        val hiyokoImageButton = findViewById<ImageButton>(R.id.watchcchi_image)
+        hiyokoImageButton = findViewById<ImageButton>(R.id.watchcchi_image)
         hiyokoImageButton.setOnClickListener {
             // タップされた時の処理
             onClickHiyokoImageButton()
@@ -114,16 +120,31 @@ class MainActivity : Activity(){
             }
             WatchicchiApp.EvolveLevel.HIYOKO -> {
                 // 鳴き声
-                if (isSoundOn()){
-                    hiyokoMediaPlayer.start()
-                }
+                crow(R.drawable.hiyoko, R.drawable.hiyoko_open_mouth, hiyokoMediaPlayer)
             }
             WatchicchiApp.EvolveLevel.NIWATORI -> {
                 // 鳴き声
-                if (isSoundOn()) {
-                    niwatoriMediaPlayer.start()
-                }
+                crow(R.drawable.niwatori, R.drawable.niwatori_open_mouth, niwatoriMediaPlayer)
             }
+        }
+    }
+
+    // 鳴き声の処理
+    fun crow(oriImage:Int, openImage:Int, mediaPlayer:MediaPlayer){
+        hiyokoImageButton.setImageResource(openImage)
+
+        // 画像をもどすためにハンドラー
+        var handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                // 画像切り替え
+                hiyokoImageButton.setImageResource(oriImage)
+            }
+        }
+        handler.postDelayed(runnable, 400)
+
+        if (isSoundOn()) {
+            mediaPlayer.start()
         }
     }
 

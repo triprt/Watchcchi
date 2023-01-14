@@ -21,14 +21,12 @@ class EatActivity : Activity() {
         setContentView(R.layout.activity_eat)
         handler = Handler(Looper.getMainLooper())
         watchicchiApp = this.application as WatchicchiApp
-        // プラス1する
-        watchicchiApp.getWatchicchi().feed()
+
         // 食べてるアニメーション
         eating()
     }
 
     private fun eating(){
-
         val images = getEatImage()
         var index = 0
         val delayMillis = getDelayMillis()
@@ -51,6 +49,8 @@ class EatActivity : Activity() {
             }
         }
         handler.post(runnable!!)
+        // プラス1する
+        watchicchiApp.getWatchicchi().feed()
     }
 
     private fun getEatType() : EatType{

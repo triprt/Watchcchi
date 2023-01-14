@@ -88,15 +88,17 @@ class Hunger constructor( _mainActivity: MainActivity)  {
         }
     }
 
-    // 餌があげられるか判定
+    // 餌があげられるか判定 ひよこと鶏のときしか食べられないようにする
     fun canFeed():Boolean{
-        return level < 6
+        val envolveLevel = watchicchiApp.getWatchicchi().getEvolveLevel()
+        return level < FULL_HUNGER_LEVEL &&
+                (envolveLevel == WatchicchiApp.EvolveLevel.HIYOKO || envolveLevel == WatchicchiApp.EvolveLevel.NIWATORI)
     }
 
     // 餌をあげる処理から呼び出す
     fun plusLevel(){
         // 満腹であれば何もしない
-        if(level == 6) return
+        if(!canFeed()) return
         // レベルあげる
         level += 1
         println("plusHungerLevel" + level)
@@ -108,6 +110,13 @@ class Hunger constructor( _mainActivity: MainActivity)  {
 
         // ご飯あげた回数をプラス
         watchicchiApp.getWatchicchi().getFriendship().plusFeedCount()
+    }
+
+    // 進化時0
+    fun resetLevel(){
+        level = 0
+        // 値保存
+        saveToDefaultSharedPreferences()
     }
 
     // 値保存

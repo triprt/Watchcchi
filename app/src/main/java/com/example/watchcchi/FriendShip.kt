@@ -51,9 +51,15 @@ class FriendShip constructor( _mainActivity: MainActivity)  {
             // 次にMainActivityが開かれた際に進化を実行するので
             // レベルだけあげておく
             watchicchiApp.getWatchicchi().nextEvolveLevel()
-            feedCount = 0
-            level = 0
-       }
+        }
+        saveToDefaultSharedPreferences()
+    }
+
+    // 進化時0
+    fun resetLevel(){
+        level = 0
+        feedCount = 0
+        // 値保存
         saveToDefaultSharedPreferences()
     }
 

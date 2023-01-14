@@ -1,11 +1,13 @@
 package com.example.watchcchi
 
+import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Vibrator
+import android.preference.PreferenceManager
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
@@ -19,7 +21,7 @@ import com.example.watchcchi.databinding.ActivityMainBinding
 
 
 
-class MainActivity : Activity() {
+class MainActivity : Activity(){
 
     private lateinit var binding: ActivityMainBinding
     private var  tapSum = 0
@@ -58,22 +60,29 @@ class MainActivity : Activity() {
 
 
     // viewDidAppearてきな？
-    override fun onResume() {
+    override fun onResume(){
         super.onResume()
+        println("=========main onResume()=====================")
+
         // 進化レベルに応じてボタンの表示・非表示切り替え
+        changeStatusButtonVisibility()
+
+        // 最初に呼ぶ関数
+        watchicchiApp.getWatchicchi().setHiyokoImage()
+    }
+
+    fun changeStatusButtonVisibility(){
         val statusButton =  findViewById<ImageButton>(R.id.status_button)
+
+        // ひよこと鶏の時だけボタン表示
         if (watchicchiApp.getWatchicchi().getEvolveLevel() == WatchicchiApp.EvolveLevel.HIYOKO
             ||
             watchicchiApp.getWatchicchi().getEvolveLevel() == WatchicchiApp.EvolveLevel.NIWATORI
         ){
-            statusButton.visibility = View.INVISIBLE
-        }else{
             statusButton.visibility = View.VISIBLE
+        }else{
+            statusButton.visibility = View.INVISIBLE
         }
-
-
-        // 最初に呼ぶ関数
-        watchicchiApp.getWatchicchi().setHiyokoImage()
     }
 
 
@@ -105,20 +114,31 @@ class MainActivity : Activity() {
             }
             WatchicchiApp.EvolveLevel.HIYOKO -> {
                 // 鳴き声
-                hiyokoMediaPlayer.start()
+                if (isSoundOn()){
+                    hiyokoMediaPlayer.start()
+                }
             }
             WatchicchiApp.EvolveLevel.NIWATORI -> {
                 // 鳴き声
-                niwatoriMediaPlayer.start()
+                if (isSoundOn()) {
+                    niwatoriMediaPlayer.start()
+                }
             }
         }
     }
+
+    // 音鳴らすかを取得
+    private fun isSoundOn():Boolean{
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        return pref.getBoolean("isSoundOn",false)
+    }
+
+    // 音鳴らすか保存
 
 
     // アプリ終了時、うぉっちっちの状態を保存
     override fun onDestroy() {
         super.onDestroy()
         println( "アプリ終了")
-
     }
 }

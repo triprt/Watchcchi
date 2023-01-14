@@ -29,7 +29,7 @@ class Hunger constructor( _mainActivity: MainActivity)  {
 
         //lastUpdateTime セット
         val lastUpdateTimeStr = pref.getString("hungerLevelLastUpdateTimeStr", LocalDateTime.now().format(formatter))
-        println("lastUpdateTimeStr" + lastUpdateTimeStr)
+        println("hungerLevelLastUpdateTimeStr" + lastUpdateTimeStr)
         lastUpdateTime = LocalDateTime.parse(lastUpdateTimeStr,formatter)
         println(LocalDateTime.now().format(formatter))
 
@@ -39,7 +39,7 @@ class Hunger constructor( _mainActivity: MainActivity)  {
             dif = 0.0
         }
 
-        for(i in 1..Math.floor(dif/2).toInt()){
+        for(i in 1..Math.floor(dif/HUNGER_INTERVAL_HOUR).toInt()){
             minusLevel()
         }
         // 2時間ごとにお腹をすかせる処理を開始
@@ -49,7 +49,7 @@ class Hunger constructor( _mainActivity: MainActivity)  {
     // 2時間ごとにお腹をすかせる処理
     private fun hungryHandler(){
         // 2時間のミリ秒で表した値
-        val TWO_HOURS_MS : Long = 2 * 60 * 60 * 1000
+        val TWO_HOURS_MS : Long = HUNGER_INTERVAL_HOUR.toLong() * 60 * 60 * 1000
         // 前回の満腹度更新時間から経過したミリ秒数
         val diffMS : Long = ChronoUnit.MILLIS.between(lastUpdateTime, LocalDateTime.now())
         // 次の2時間定期処理を始めるまで待つ時間（前回の満腹度更新時間から5:30経過していたら、1:30後に定期処理を開始）
@@ -77,12 +77,12 @@ class Hunger constructor( _mainActivity: MainActivity)  {
             // レベル下げる
             level -= 1
             // 更新時間を更新 2*num
-            lastUpdateTime = lastUpdateTime.plusHours(2L)
+            lastUpdateTime = lastUpdateTime.plusHours(HUNGER_INTERVAL_HOUR.toLong())
             // 保存もしておく
             saveToDefaultSharedPreferences()
         } else{
             // 満腹度0かつ前回の満腹度更新から、2h以上経過していたら
-            if(lastUpdateTime.plusHours(2L) > LocalDateTime.now()) {
+            if(lastUpdateTime.plusHours(HUNGER_INTERVAL_HOUR.toLong()) > LocalDateTime.now()) {
                 watchicchiApp.getWatchicchi().getFriendship().minusLevel()
             }
         }
@@ -122,7 +122,7 @@ class Hunger constructor( _mainActivity: MainActivity)  {
     // statusActivityから呼ぶ
     fun getOnakaText():String{
         return when(level){
-           in 4..6 -> "● ● ● ●"
+           in 4..FULL_HUNGER_LEVEL -> "● ● ● ●"
             3 -> "● ● ● ○"
             2 -> "● ● ○ ○"
             1 -> "● ○ ○ ○"

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -22,12 +23,14 @@ class StatusActivity : Activity() {
 
         setContentView(R.layout.activity_status)
         setTapEvent()
+        setImageButton()
     }
 
     // viewDidAppear的なの
     override fun onResume() {
         super.onResume()
         setupText()
+
     }
 
 
@@ -41,7 +44,22 @@ class StatusActivity : Activity() {
         val onakaTextView =  findViewById<TextView>(R.id.onaka)
         onakaTextView.text = watchicchiApp.getWatchicchi().getOnakaText()
         val nakayoshiTextView =  findViewById<TextView>(R.id.nakayoshi)
-        nakayoshiTextView.text = watchicchiApp.getWatchicchi().getNakayoshiText()
+        nakayoshiTextView.text = watchicchiApp.getWatchicchi().getFriendShipText()
+    }
+
+    // ボタン画像セット
+    private fun setImageButton(){
+        val soundButton =  findViewById<ImageButton>(R.id.sound)
+        if(isSoundOn()){
+            soundButton.setBackgroundResource(R.drawable.sound_on)
+        }else{
+            soundButton.setBackgroundResource(R.drawable.sound_off)
+        }
+    }
+    // 音鳴らすかを取得
+    private fun isSoundOn():Boolean{
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        return pref.getBoolean("isSoundOn",false)
     }
 
     // ボタン押した時の処理
@@ -58,6 +76,18 @@ class StatusActivity : Activity() {
             // ゲーム開始
 
         }
+        val soundButton =  findViewById<ImageButton>(R.id.sound)
+        soundButton.setOnClickListener {
+            // 音のON/Off切り替え
+            val pref = PreferenceManager.getDefaultSharedPreferences(this)
+            val editor = pref.edit()
+            editor.putBoolean("isSoundOn", !pref.getBoolean("isSoundOn",true))
+            editor.apply()
+            // 画像切り替え
+            setImageButton()
+
+        }
+
         val backButton =  findViewById<ImageButton>(R.id.back_button)
         backButton.setOnClickListener {
             // もとの画面に戻る

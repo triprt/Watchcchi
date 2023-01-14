@@ -12,9 +12,6 @@ import android.widget.ImageButton
 import androidx.lifecycle.lifecycleScope
 import java.lang.Thread.sleep
 
-
-
-
 class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
     // sharePrefのために渡す
     private var watchicchiApp: WatchicchiApp
@@ -124,6 +121,14 @@ class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
         if (evolveLevel == WatchicchiApp.EvolveLevel.NIWATORI_LAY_EGG){
             watchicchiApp.getWatchicchiInfo().plusGeneration()
         }
+        // 進化レベル保存
+        val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        val editor = pref.edit()
+        editor.putInt ("evolveLevel", evolveLevel.id)
+        editor.apply()
+
+        // ボタン表示非表示切り替え
+        mainActivity?.changeStatusButtonVisibility()
     }
 
     // 状態取得
@@ -144,8 +149,8 @@ class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
         return hunger.getOnakaText()
     }
 
-    fun getNakayoshiText():String{
-        return friendShip.getOnakaText()
+    fun getFriendShipText():String{
+        return friendShip.getFriendShipText()
     }
 
     // ご飯をあげる処理

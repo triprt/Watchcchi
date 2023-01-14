@@ -18,8 +18,8 @@ class FriendShip constructor( _mainActivity: MainActivity)  {
         watchicchiApp = mainActivity.application as WatchicchiApp
         // 保存された値を取得 hungerLevel セット
         val pref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-        level = pref.getInt("friendshipLevel",3)
-        feedCount = pref.getInt("feedCount",1)
+        level = pref.getInt("friendshipLevel",0)
+        feedCount = pref.getInt("feedCount",0)
         println("friendshipLevelレベル取得 " + level)
         println("feedCount取得 " + feedCount)
     }
@@ -40,14 +40,14 @@ class FriendShip constructor( _mainActivity: MainActivity)  {
 
         // 6回餌をあげて、レベルが6でない時は
         // 1足して餌あげた回数をリセットする
-        if(feedCount == 6 && level < 6){
+        if(feedCount == FULL_HUNGER_LEVEL && level < FULL_FRIENDSHIP_LEVEL){
             level += 1
             feedCount = 0
             println("仲良し度 プラス " + level)
 
         }
         // 6になったら進化する
-        if(level == 4) {
+        if(level == FULL_FRIENDSHIP_LEVEL) {
             // 次にMainActivityが開かれた際に進化を実行するので
             // レベルだけあげておく
             watchicchiApp.getWatchicchi().nextEvolveLevel()
@@ -67,9 +67,9 @@ class FriendShip constructor( _mainActivity: MainActivity)  {
     }
 
     // 画面に表示させる
-    fun getOnakaText():String{
+    fun getFriendShipText():String{
         return when(level){
-            in 4..6 -> "● ● ● ●"
+            in 4..FULL_FRIENDSHIP_LEVEL -> "● ● ● ●"
             3 -> "● ● ● ○"
             2 -> "● ● ○ ○"
             1 -> "● ○ ○ ○"

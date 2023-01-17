@@ -125,13 +125,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
                     android:orientation="vertical"
-                    android:paddingLeft="30dp"
+                    android:paddingLeft="60px"
                     android:gravity="bottom">
                     <ImageView
                         android:src="@drawable/game_niwatori_walking1"
                         android:id="@+id/game_hiyoko"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="40px"
+                        android:layout_height="40px"
                         android:scaleType="center"
                         android:background="@android:color/transparent"
                         />

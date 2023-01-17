@@ -22,6 +22,10 @@ class GameHiyoko constructor(_imageView:ImageView) {
 
     // 歩き始める
     fun startWalking(){
+        val array = IntArray(2)
+        imageView.getLocationInWindow(array)
+        println("ひよこ 0:"+array[0] + " 1:" + array[1])
+
         stopWalking()
         //trueなら1、falseなら2を表示
         var isImage1 = false
@@ -59,6 +63,8 @@ class GameHiyoko constructor(_imageView:ImageView) {
         val animator2 = ObjectAnimator.ofFloat(imageView, "translationY", 0f)
         animator2.duration = 400
         jumpAnimatorSet.playSequentially(animator1,animator2)
+
+
         // 着地（walkingスターと）
         val runnableLand = object : Runnable {
             override fun run() {

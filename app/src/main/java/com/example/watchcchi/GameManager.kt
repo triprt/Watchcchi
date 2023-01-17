@@ -1,9 +1,12 @@
 package com.example.watchcchi
 
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import java.util.*
+import kotlin.math.absoluteValue
 
 class GameManager (_gameActivity:GameActivity){
     var score = 0
@@ -34,7 +37,6 @@ class GameManager (_gameActivity:GameActivity){
     init{
         gameActivity = _gameActivity
         gameHiyoko = GameHiyoko( gameActivity.findViewById<ImageView>(R.id.game_hiyoko))
-
     }
 
     fun startGame(){
@@ -50,33 +52,53 @@ class GameManager (_gameActivity:GameActivity){
     fun setTimer(){
         timer = Timer()
         val task = object : TimerTask() {
-            // 250ms秒おきに画像を切り替える処理を実行
             override fun run() {
                 // 障害物インターバルカウントを増やす
                 obstacleIntervalCount ++
-
-                if(isAddObstacle()){
+                if( isAddObstacle() ){
+                    // 障害物を追加する
                     addObstacle()
+                }
+                println( "obstacleIntervalCount:" + obstacleIntervalCount )
+                // 障害物動かす
+                for( obstacle in obstacles ){
+                    obstacle.move()
+                    val arrayO = IntArray(2)
+                    obstacle.imageView.getLocationOnScreen(arrayO)
+
+                    val arrayH = IntArray(2)
+                    gameHiyoko.imageView.getLocationOnScreen(arrayH)
+
+                    if((arrayH[0]-arrayO[0]).absoluteValue < 10 && (arrayH[1]-arrayO[1]).absoluteValue < 30){
+                        obstacle.show()
+                        gameOver()
+                        break
+                    }
+
                 }
             }
         }
-        timer?.schedule(task,100 ,100)
+        // 100(ms)後にタイマー開始、50(ms)後ごとに、taskを実行する
+        timer?.schedule(task,100 ,50)
     }
 
-    // interval分カウントがすすんだら表示する
-    fun isAddObstacle():Boolean {
+    // 障害物を追加する為のinterval分カウントが経過してるかどうか
+    fun isAddObstacle(): Boolean {
         return obstacleIntervalCount >= obstacleInterval
     }
 
     fun addObstacle(){
+        println( "obstacle.add()実行" )
         // 次のインターバルを設定
         obstacleIntervalCount = 0
-        obstacleInterval = obstacleIntervalParam + (-5..5).random()
+        obstacleInterval = obstacleIntervalParam + (-50..50).random()
 
         val layout = gameActivity.findViewById<LinearLayout>(nowObstacleAreaNo.id)
         val obstacle = GameObstacle(ImageView(gameActivity),layout)
         obstacles.add(obstacle)
         obstacle.startMoving()
+        //obstacle.add()
+
         // 適当に3こ以上なら消す
         if(obstacles.size >= 3){
             obstacles.removeAt(0)
@@ -97,12 +119,29 @@ class GameManager (_gameActivity:GameActivity){
     }
 
     fun gameOver() {
+        println("gameover")
+
         timer?.cancel()
+        gameHiyoko.stopWalking()
+        for( obstacle in obstacles ){
+            obstacle.stopMoving()
+        }
+
         score = 0
         // game over表示
-        val tapToStart = gameActivity.findViewById<ImageView>(R.id.game_text)
-        tapToStart.visibility = View.VISIBLE
-        tapToStart.setImageResource(R.drawable.game_over)
+
+        val handler = Handler(Looper.getMainLooper())
+
+        val runnable = object : Runnable {
+            override fun run() {
+                val tapToStart = gameActivity.findViewById<ImageView>(R.id.game_text)
+                tapToStart.visibility = View.VISIBLE
+                tapToStart.setImageResource(R.drawable.game_over)
+            }
+        }
+        handler.post(runnable)
+
+
     }
 
     fun saveHighScore() {

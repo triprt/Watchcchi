@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/box_inset_layout_padding"
+    tools:context=".GameActivity"
+    tools:deviceIds="wear">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:gravity="center|bottom">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+        <ImageView
+            android:src="@drawable/score"
+            android:paddingEnd="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            />
+        <ImageView
+            android:paddingStart="5dp"
+            android:src="@drawable/best"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:paddingEnd="10dp"
+                android:id="@+id/now_score"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="14dp"
+                android:gravity="right"
+                />
+        <TextView
+            android:paddingStart="10dp"
+            android:id="@+id/best_score"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:text="0"
+            android:textSize="14dp"
+            android:gravity="left"
+
+            />
+        </LinearLayout>
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            android:gravity="bottom">
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="right|bottom">
+                    <ImageView
+                        android:src="@drawable/tap_to_start"
+                        android:id="@+id/game_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/obstcle_area1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="right|bottom"></LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/obstcle_area2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="right|bottom">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/obstcle_area3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="right|bottom">
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:paddingLeft="30dp"
+                    android:gravity="bottom">
+                    <ImageView
+                        android:src="@drawable/game_niwatori_walking1"
+                        android:id="@+id/game_hiyoko"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="center"
+                        android:background="@android:color/transparent"
+                        />
+                </LinearLayout>
+            </FrameLayout>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:visibility="visible"
+                android:background="@color/ground"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/back_button" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.wear.widget.BoxInsetLayout>

@@ -74,7 +74,8 @@ class StatusActivity : Activity() {
         val gameButton =  findViewById<ImageButton>(R.id.game)
         gameButton.setOnClickListener {
             // ゲーム開始
-
+            val intent = Intent(this, GameActivity::class.java)
+            startActivity(intent)
         }
         val soundButton =  findViewById<ImageButton>(R.id.sound)
         soundButton.setOnClickListener {

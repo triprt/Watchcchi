@@ -56,13 +56,13 @@ class EatActivity : Activity() {
     private fun getEatType() : EatType{
         // たべてる画像切り替え
         return if(watchicchiApp.getWatchicchi().getHunger().canFeed()){
-            if(isHiyoko()){
+            if(watchicchiApp.getWatchicchi().isHiyoko()){
                 EatType.HIYOKO_EAT
             }else{
                 EatType.NIWATORI_EAT
             }
         }else{
-            if(isHiyoko()){
+            if(watchicchiApp.getWatchicchi().isHiyoko()){
                 EatType.HIYOKO_NOEAT
             }else{
                 EatType.NIWATORI_NOEAT
@@ -70,21 +70,7 @@ class EatActivity : Activity() {
         }
     }
 
-    // 表示させる画像はひよこか？
-    private fun isHiyoko():Boolean{
-        return when(watchicchiApp.getWatchicchi().getEvolveLevel()){
-            WatchicchiApp.EvolveLevel.EGG -> false
-            WatchicchiApp.EvolveLevel.HIYOKO_WITH_EGG -> false
-            WatchicchiApp.EvolveLevel.HIYOKO -> true
-            WatchicchiApp.EvolveLevel.HIYOKO_TO_NIWATORI -> true
-            WatchicchiApp.EvolveLevel.NIWATORI -> false
-            WatchicchiApp.EvolveLevel.NIWATORI_LAY_EGG -> false
 
-            else -> {false}
-        }
-
-
-    }
 
     private fun getEatImage(): Array<Int> {
         return  when( getEatType() ){
@@ -156,11 +142,18 @@ class EatActivity : Activity() {
         NIWATORI_NOEAT,
     }
 
-    // activity終了でhandlerも終了
-    override fun onDestroy() {
-        super.onDestroy()
+    // activity非表示でHandler終了
+    override fun onPause() {
+        super.onPause()
         if (runnable != null){
             handler.removeCallbacks(runnable!!)
         }
+
+    }
+
+    // activity終了でhandlerも終了
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 }

@@ -69,6 +69,12 @@ class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
 
     // 画面表示時の画像・アニメーションセット
     fun setHiyokoImage(){
+        println("setHiyokoImage")
+        println("level:" + watchicchiApp.getWatchicchi().getEvolveLevel())
+
+
+
+
         when(watchicchiApp.getWatchicchi().getEvolveLevel()){
             WatchicchiApp.EvolveLevel.EGG -> {
                 // 卵
@@ -172,5 +178,18 @@ class Watchcchi constructor(_watchicchiApp:WatchicchiApp) {
     // ご飯をあげる処理
     fun feed(){
         hunger.plusLevel()
+    }
+
+    // 表示させる画像はひよこか？
+    fun isHiyoko():Boolean{
+        return when(watchicchiApp.getWatchicchi().getEvolveLevel()){
+            WatchicchiApp.EvolveLevel.EGG -> false
+            WatchicchiApp.EvolveLevel.HIYOKO_WITH_EGG -> false
+            WatchicchiApp.EvolveLevel.HIYOKO -> true
+            WatchicchiApp.EvolveLevel.HIYOKO_TO_NIWATORI -> true
+            WatchicchiApp.EvolveLevel.NIWATORI -> false
+            WatchicchiApp.EvolveLevel.NIWATORI_LAY_EGG -> false
+            else -> {false}
+        }
     }
 }

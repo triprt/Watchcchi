@@ -128,7 +128,7 @@
                     android:paddingLeft="60px"
                     android:gravity="bottom">
                     <ImageView
-                        android:src="@drawable/game_niwatori_walking1"
+                        android:src="@drawable/game_hiyoko_walking1"
                         android:id="@+id/game_hiyoko"
                         android:layout_width="40px"
                         android:layout_height="40px"

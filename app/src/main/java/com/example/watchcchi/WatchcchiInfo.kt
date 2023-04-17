@@ -28,12 +28,11 @@ class WatchcchiInfo constructor(_watchicchiApp:WatchicchiApp){
         generation = pref.getInt("generation", 1)
         startDate = LocalDate.parse(startDateStr,formatter)
 
-        println("WatchichiInfo init 完了")
     }
 
     fun getDayText():String{
         // 日付の差分計算
-        return (ChronoUnit.DAYS.between(LocalDate.now(),startDate) + 1).toString() + "日目"
+        return (ChronoUnit.DAYS.between(startDate, LocalDate.now()) + 1).toString() + "日目"
     }
 
     fun getGenerationText():String{
@@ -42,5 +41,9 @@ class WatchcchiInfo constructor(_watchicchiApp:WatchicchiApp){
 
     fun plusGeneration(){
         generation ++
+        val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
+        val editor = pref.edit()
+        editor.putInt ("generation", generation)
+        editor.apply()
     }
 }

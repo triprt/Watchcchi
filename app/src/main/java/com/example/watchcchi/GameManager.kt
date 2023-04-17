@@ -36,7 +36,7 @@ class GameManager (_gameActivity:GameActivity){
 
     init{
         gameActivity = _gameActivity
-        gameHiyoko = GameHiyoko( gameActivity.findViewById<ImageView>(R.id.game_hiyoko))
+        gameHiyoko = GameHiyoko( gameActivity)
     }
 
     fun startGame(){
@@ -91,16 +91,16 @@ class GameManager (_gameActivity:GameActivity){
         println( "obstacle.add()実行" )
         // 次のインターバルを設定
         obstacleIntervalCount = 0
-        obstacleInterval = obstacleIntervalParam + (-50..50).random()
+        obstacleInterval = obstacleIntervalParam + (-1..20).random()
 
         val layout = gameActivity.findViewById<LinearLayout>(nowObstacleAreaNo.id)
         val obstacle = GameObstacle(ImageView(gameActivity),layout)
         obstacles.add(obstacle)
-        obstacle.startMoving()
-        //obstacle.add()
+        obstacle.setImage()
 
-        // 適当に3こ以上なら消す
-        if(obstacles.size >= 3){
+        // 適当に3こより多いなら消す
+        if(obstacles.size > 3){
+            obstacles[0].stopMoving()
             obstacles.removeAt(0)
         }
         // 次回のlayoutセット

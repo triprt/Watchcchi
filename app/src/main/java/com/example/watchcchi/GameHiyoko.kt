@@ -7,24 +7,38 @@ import android.os.Looper
 import android.widget.ImageView
 import java.util.*
 
-class GameHiyoko constructor(_imageView:ImageView) {
+class GameHiyoko constructor(gameActivity:GameActivity) {
 
     var imageView: ImageView
     var isJumping:Boolean = false
     private var timer : Timer
     private lateinit var handler:Handler
+    private var walkingImage1 : Int = R.drawable.game_hiyoko_walking1
+    private var walkingImage2 : Int = R.drawable.game_hiyoko_walking2
+    private var jumpingImage : Int = R.drawable.game_hiyoko_jumping
+
 
     init{
         handler = Handler(Looper.getMainLooper())
-        imageView = _imageView
+        imageView = gameActivity.findViewById<ImageView>(R.id.game_hiyoko)
         timer = Timer()
+        val watchicchiApp = gameActivity.application as WatchicchiApp
+        if(!watchicchiApp.getWatchicchi().isHiyoko()){
+            walkingImage1 = R.drawable.game_niwatori_walking1
+            walkingImage2 = R.drawable.game_niwatori_walking2
+            jumpingImage = R.drawable.game_niwatori_jumping
+        }
+        // 初期表示画像変更
+        val runnable = object : Runnable {
+            override fun run() {
+                imageView.setImageResource(walkingImage1)
+            }
+        }
+        handler.post(runnable)
     }
 
     // 歩き始める
     fun startWalking(){
-        val array = IntArray(2)
-        imageView.getLocationInWindow(array)
-        println("ひよこ 0:"+array[0] + " 1:" + array[1])
 
         stopWalking()
         //trueなら1、falseなら2を表示
@@ -36,9 +50,9 @@ class GameHiyoko constructor(_imageView:ImageView) {
                 val runnable = object : Runnable {
                     override fun run() {
                         if(isImage1){
-                            imageView.setImageResource(R.drawable.game_niwatori_walking1)
+                            imageView.setImageResource(walkingImage1)
                         }else{
-                            imageView.setImageResource(R.drawable.game_niwatori_walking2)
+                            imageView.setImageResource(walkingImage2)
                         }
                         isImage1 = !isImage1
                     }
@@ -64,7 +78,6 @@ class GameHiyoko constructor(_imageView:ImageView) {
         animator2.duration = 400
         jumpAnimatorSet.playSequentially(animator1,animator2)
 
-
         // 着地（walkingスターと）
         val runnableLand = object : Runnable {
             override fun run() {
@@ -79,7 +92,7 @@ class GameHiyoko constructor(_imageView:ImageView) {
             override fun run() {
                 isJumping = true
                 // 画像切り替え
-                imageView.setImageResource(R.drawable.game_niwatori_jumping)
+                imageView.setImageResource(jumpingImage)
                 jumpAnimatorSet?.start()
                 //アニメーションに1sかかるので、1s待ってからwalking再開
                 handler.postDelayed(runnableLand, 900)

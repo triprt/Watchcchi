@@ -2,12 +2,13 @@ package com.example.watchcchi
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Vibrator
+import android.preference.PreferenceManager
 import android.widget.ImageButton
-import java.lang.Thread.sleep
 import java.util.*
 
 class AnimationManager constructor(mainActivity:MainActivity){
@@ -66,8 +67,11 @@ class AnimationManager constructor(mainActivity:MainActivity){
                 index = (index + 1) % images.size
                 if (index == 0) {
                     // 画像をすべて表示したら、「Runnable」を停止する
-                    // 進化処理
-                    watchicchiApp.getWatchicchi().envolve()
+                    // アプリ起動中であれば進化フラグすすめる
+                    val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
+                    if(pref.getBoolean("isMainActivityOn", true)){
+                        watchicchiApp.getWatchicchi().envolve()
+                    }
                     return
                 }
                 handler.postDelayed(this, 1000)
@@ -122,7 +126,6 @@ class AnimationManager constructor(mainActivity:MainActivity){
     fun getWalkingAnimatorSet(): AnimatorSet {
         val pattern = (0 until 2).random()
         val animatorSet = AnimatorSet()
-
         when(pattern){
             0 -> {
                 // 右に歩く　ジャンプ
@@ -147,8 +150,6 @@ class AnimationManager constructor(mainActivity:MainActivity){
                 val animator7 = ObjectAnimator.ofFloat(imageButton, "scaleX", 1f)
                 animator7.duration = 0
                 animatorSet.playSequentially(animator1, animator2, animator3, animator4, animator5, animator6, animator7)
-
-
             }
             1 -> {
                 val animator1 = ObjectAnimator.ofFloat(imageButton, "scaleX", -1f)
@@ -191,7 +192,6 @@ class AnimationManager constructor(mainActivity:MainActivity){
             R.drawable.hiyoko,
             R.drawable.niwatori,
         )
-
         var index = 0
         val runnable = object : Runnable {
             override fun run() {
@@ -201,8 +201,12 @@ class AnimationManager constructor(mainActivity:MainActivity){
                 imageButton.setImageResource(images[index])
                 index = (index + 1) % images.size
                 if (index == 0) {
-                    // 画像をすべて表示したら、「Runnable」を停止する
-                    watchicchiApp.getWatchicchi().envolve()
+                    // 画像をすべて表示したら、進化させて「Runnable」を停止する
+                    // アプリ起動中であれば進化フラグすすめる
+                    val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
+                    if(pref.getBoolean("isMainActivityOn", true)){
+                        watchicchiApp.getWatchicchi().envolve()
+                    }
                     return
                 }
                 handler.postDelayed(this, 1000)
@@ -219,8 +223,6 @@ class AnimationManager constructor(mainActivity:MainActivity){
             R.drawable.niwatori_birth,
             R.drawable.niwatori,
             R.drawable.niwatori_birth,
-            R.drawable.niwatori,
-            R.drawable.niwatori_birth,
             R.drawable.niwatori_birth,
         )
         var index = 0
@@ -231,9 +233,11 @@ class AnimationManager constructor(mainActivity:MainActivity){
                 imageButton.setImageResource(images[index])
                 index = (index + 1) % images.size
                 if (index == 0) {
-                    // 画像をすべて表示したら、状態を帰る
-                    watchicchiApp.getWatchicchi().envolve()
-                    return
+                    // アプリ起動中であれば進化フラグすすめる
+                    val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
+                    if(pref.getBoolean("isMainActivityOn", true)){
+                        watchicchiApp.getWatchicchi().envolve()
+                    }
                 }
                 // 振動
                 vibrator.vibrate(80)

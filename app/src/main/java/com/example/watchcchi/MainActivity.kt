@@ -27,12 +27,11 @@ import java.lang.Thread.sleep
 
 
 class MainActivity : Activity(){
-
     private lateinit var binding: ActivityMainBinding
     private var  tapSum = 0
     private lateinit var  hiyokoMediaPlayer: MediaPlayer
     private lateinit var  niwatoriMediaPlayer: MediaPlayer
-    private lateinit var watchicchiApp: WatchicchiApp
+    lateinit var watchicchiApp: WatchicchiApp
     private lateinit var hiyokoImageButton:ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,18 +60,23 @@ class MainActivity : Activity(){
         }
         watchicchiApp = this.application as WatchicchiApp
         watchicchiApp.getWatchicchi().setUpActivity(this)
-        println("MainActivity onCreate() 完了")
+
+
     }
 
 
     // viewDidAppearてきな？
     override fun onResume(){
         super.onResume()
-        println("=========main onResume()=====================")
+
+        // アプリ起動中フラグ
+        val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
+        val editor = pref.edit()
+        editor.putBoolean("isMainActivityOn", true)
+        editor.apply()
 
         // 進化レベルに応じてボタンの表示・非表示切り替え
         changeStatusButtonVisibility()
-
         // 最初に呼ぶ関数
         watchicchiApp.getWatchicchi().setHiyokoImage()
     }
@@ -154,7 +158,15 @@ class MainActivity : Activity(){
         return pref.getBoolean("isSoundOn",false)
     }
 
-    // 音鳴らすか保存
+    // 画面閉じたら
+    override fun onPause() {
+        super.onPause()
+        // 進化進まないようにMainActivity起動フラグをオフに
+        val pref = PreferenceManager.getDefaultSharedPreferences(watchicchiApp)
+        val editor = pref.edit()
+        editor.putBoolean("isMainActivityOn", false)
+        editor.apply()
+    }
 
 
     // アプリ終了時、うぉっちっちの状態を保存

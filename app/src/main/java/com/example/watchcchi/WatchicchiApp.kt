@@ -30,18 +30,22 @@ class WatchicchiApp:Application() {
     private lateinit var  watchcchiInfo : WatchcchiInfo
     private lateinit var  watchcchi : Watchcchi
 
+
     override fun onCreate() {
         super.onCreate()
+
+        println("watchicchiApp 起動 onCreate")
+
         // 初回起動時であれば初期値セット
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        if(pref.getBoolean("isFirstLaunch", true)){
+        if(pref.getBoolean("isFirstLaunch", true)) {
             val editor = pref.edit()
             // 進化レベル0
-            editor.putInt ("evolveLevel", 0)
+            editor.putInt("evolveLevel", 0)
             // 始めた日付
             val formatter = DateTimeFormatter.ofPattern("d MM, yyyy")
-            editor.putString ("startDateStr", LocalDateTime.now().format(formatter) )
+            editor.putString("startDateStr", LocalDateTime.now().format(formatter))
             // 最初は1世代
             editor.putInt("generation", 1)
             // おなかはぺこぺこ
@@ -55,9 +59,10 @@ class WatchicchiApp:Application() {
             // おなか更新時間はいらないかな？
 
             // 初回起動フラグをfalseに
-            editor.putBoolean ("isFirstLaunch", false)
+            editor.putBoolean("isFirstLaunch", false)
             editor.apply()
         }
+
 
         //　うぉっちっち状態管理クラス
         watchcchi = Watchcchi(this)

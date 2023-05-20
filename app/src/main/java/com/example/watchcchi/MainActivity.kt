@@ -42,6 +42,7 @@ class MainActivity : Activity(){
         setContentView(binding.root)
 
         // 何度も定義するのはあれなのでここで定義
+        // 音声ファイル
         hiyokoMediaPlayer = MediaPlayer.create(this, R.raw.piyo)
         niwatoriMediaPlayer = MediaPlayer.create(this, R.raw.kokekokko)
 
@@ -53,14 +54,17 @@ class MainActivity : Activity(){
             startActivity(intent)
         }
 
+        // ボタン読み込み
         hiyokoImageButton = findViewById<ImageButton>(R.id.watchcchi_image)
+        // タップされた時の処理
         hiyokoImageButton.setOnClickListener {
             // タップされた時の処理
             onClickHiyokoImageButton()
         }
+
+
         watchicchiApp = this.application as WatchicchiApp
         watchicchiApp.getWatchicchi().setUpActivity(this)
-
 
     }
 
